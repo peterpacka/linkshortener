@@ -5,7 +5,10 @@ import Script from "next/script";
 import { FormEvent, useRef, useState } from "react";
 import { RecaptchaPrivacyText } from "./RecaptchaPrivacyText";
 
-declare const grecaptcha: any;
+declare const grecaptcha: {
+  ready: (cb: () => void) => void;
+  execute: (siteKey: string, options?: { action: string }) => Promise<string>;
+};
 
 export const ShortLinkForm = () => {
   const [link, setLink] = useState<string>("");
