@@ -3,6 +3,7 @@ import linkModel from "@/database/models/linkModel";
 import { generateShorter } from "@/utils/generateShorter";
 import { ratelimit } from "@/utils/ratelimit";
 import { redis } from "@/utils/redis";
+import { validateRecaptha } from "@/utils/validateRecaptcha";
 import { NextRequest, NextResponse } from "next/server";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
@@ -33,7 +34,23 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { link } = await req.json();
+  const { link, recaptchaToken } = await req.json();
+
+  if (!recaptchaToken) {
+    return NextResponse.json({
+      success: false,
+      error: "Recaptcha failed",
+    });
+  }
+
+  const validRecaptcha = await validateRecaptha(recaptchaToken);
+
+  if (!validRecaptcha) {
+    return NextResponse.json({
+      success: false,
+      error: "Recaptcha failed",
+    });
+  }
 
   if (!link || typeof link !== "string" || !link.trim()) {
     return NextResponse.json(

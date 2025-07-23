@@ -1,7 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Script from "next/script";
 import { FormEvent, useRef, useState } from "react";
+import { RecaptchaPrivacyText } from "./RecaptchaPrivacyText";
+
+declare const grecaptcha: any;
 
 export const ShortLinkForm = () => {
   const [link, setLink] = useState<string>("");
@@ -33,21 +37,28 @@ export const ShortLinkForm = () => {
     setPending(true);
 
     oldLink.current = link;
-    const request = await fetch("/api/short", {
-      method: "POST",
-      body: JSON.stringify({ link }),
-    });
+    grecaptcha.ready(async function () {
+      const token = await grecaptcha.execute(
+        "6LeOGo0rAAAAAOMXr4NWen88oBVPDF6Rvpko4iXt",
+        { action: "submit" },
+      );
 
-    const response = await request.json();
+      const request = await fetch("/api/short", {
+        method: "POST",
+        body: JSON.stringify({ link, recaptchaToken: token }),
+      });
 
-    if (!response.success) {
+      const response = await request.json();
+
+      if (!response.success) {
+        setPending(false);
+        setError(response.error);
+        return;
+      }
+
+      setGeneratedLink(response.newLink);
       setPending(false);
-      setError(response.error);
-      return;
-    }
-
-    setGeneratedLink(response.newLink);
-    setPending(false);
+    });
   };
 
   return (
@@ -74,6 +85,7 @@ export const ShortLinkForm = () => {
           {pending ? <div className="loading-spinner" /> : "short"}
         </button>
       </form>
+      <RecaptchaPrivacyText />
       {generatedLink && !pending && !error && (
         <div className="fadeIn flex flex-col bg-green-100 p-2">
           <span className="text-neutral-700/80">
@@ -108,6 +120,7 @@ export const ShortLinkForm = () => {
       {error && (
         <div className="fadeIn flex flex-col bg-red-100 p-2">{error}</div>
       )}
+      <Script src="https://www.google.com/recaptcha/api.js?render=6LeOGo0rAAAAAOMXr4NWen88oBVPDF6Rvpko4iXt" />
     </div>
   );
 };
