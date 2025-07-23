@@ -77,6 +77,7 @@ export async function POST(req: NextRequest) {
     !url ||
     !isHttp ||
     !hasDomain ||
+    url.href.includes(BASE_URL) ||
     normalizedUrl.startsWith("javascript:")
   ) {
     return NextResponse.json(
