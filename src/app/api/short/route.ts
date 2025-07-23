@@ -77,7 +77,6 @@ export async function POST(req: NextRequest) {
     !url ||
     !isHttp ||
     !hasDomain ||
-    url.href.includes(BASE_URL) ||
     normalizedUrl.startsWith("javascript:")
   ) {
     return NextResponse.json(
@@ -86,6 +85,16 @@ export async function POST(req: NextRequest) {
         error: "Enter valid link to shorten",
       },
       { status: 400 },
+    );
+  }
+
+  if (url.href.includes(BASE_URL)) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "You cannot shorten a link that is already shortened",
+      },
+      { status: 409 },
     );
   }
 
