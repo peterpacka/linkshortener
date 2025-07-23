@@ -36,20 +36,26 @@ export async function POST(req: NextRequest) {
 
   const { link, recaptchaToken } = await req.json();
 
-  if (!recaptchaToken) {
-    return NextResponse.json({
-      success: false,
-      error: "Recaptcha failed",
-    });
+  if (!recaptchaToken || typeof recaptchaToken !== "string") {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Recaptcha failed",
+      },
+      { status: 400 },
+    );
   }
 
   const validRecaptcha = await validateRecaptha(recaptchaToken);
 
   if (!validRecaptcha) {
-    return NextResponse.json({
-      success: false,
-      error: "Recaptcha failed",
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Recaptcha failed",
+      },
+      { status: 400 },
+    );
   }
 
   if (!link || typeof link !== "string" || !link.trim()) {
@@ -85,10 +91,13 @@ export async function POST(req: NextRequest) {
   // FIND CACHE
   const cachedShort = await redis.get<string>(`short:${link}`);
   if (cachedShort) {
-    return NextResponse.json({
-      success: true,
-      newLink: cachedShort,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        newLink: cachedShort,
+      },
+      { status: 200 },
+    );
   }
 
   try {
