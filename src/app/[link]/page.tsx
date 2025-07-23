@@ -4,9 +4,9 @@ import { redis } from "@/utils/redis";
 import { notFound, permanentRedirect } from "next/navigation";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     link: string;
-  };
+  }>;
 }
 
 export default async function Page({ params }: PageProps) {

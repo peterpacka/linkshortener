@@ -4,9 +4,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     link: string;
-  };
+  }>;
 }
 
 export default async function Page({ params }: PageProps) {
