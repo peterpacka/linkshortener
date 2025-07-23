@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "@/styles/globals.css";
+import Link from "next/link";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -37,7 +38,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${roboto.className} antialiased`}>{children}</body>
+      <body className={`${roboto.className} antialiased`}>
+        {children}
+        <footer className="absolute bottom-3 left-1/2 -translate-x-1/2">
+          <Link
+            className="text-neutral-500 hover:underline"
+            href="https://iampitr.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Build by Pitr
+          </Link>
+        </footer>
+      </body>
     </html>
   );
 }
