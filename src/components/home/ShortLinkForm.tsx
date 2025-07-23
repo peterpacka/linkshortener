@@ -78,7 +78,7 @@ export const ShortLinkForm = () => {
         <div className="fadeIn flex flex-col bg-green-100 p-2">
           <span className="text-neutral-700/80">
             {oldLink.current.slice(0, 25)}
-            {oldLink.current.length > 15 && "..."}{" "}
+            {oldLink.current.length > 25 && "..."}{" "}
             <svg
               className="inline-block"
               xmlns="http://www.w3.org/2000/svg"
