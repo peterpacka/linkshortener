@@ -116,7 +116,7 @@ export const ShortLinkForm = () => {
               href={generatedLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-lg text-green-900 hover:text-green-900/80 hover:underline"
+              className="text-lg break-all text-green-900 hover:text-green-900/80 hover:underline"
             >
               {generatedLink}
             </Link>
