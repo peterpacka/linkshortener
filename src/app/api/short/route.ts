@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        newLink: cachedShort,
+        newLink: `${BASE_URL}/${cachedShort}`,
       },
       { status: 200 },
     );
@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
       // REDIS CACHE
       const shortUrl = `${BASE_URL}/${found.shorter}`;
       await redis.set(`short:${found.shorter}`, link, { ex: 3600 });
-      await redis.set(`short:${link}`, `${BASE_URL}/${found.shorter}`, {
+      await redis.set(`short:${link}`, `${found.shorter}`, {
         ex: 3600,
       });
 
@@ -133,17 +133,17 @@ export async function POST(req: NextRequest) {
     }
 
     // Create new shorter
-    const shorterLink = generateShorter();
+    const shorter = generateShorter();
     const newLink = await linkModel.create({
-      shorter: shorterLink,
+      shorter: shorter,
       url: link,
     });
     await newLink.save();
 
     // REDIS CACHE
     const shortUrl = `${BASE_URL}/${newLink.shorter}`;
-    await redis.set(`short:${shorterLink}`, link, { ex: 3600 });
-    await redis.set(`short:${link}`, `${BASE_URL}/${shorterLink}`, {
+    await redis.set(`short:${shorter}`, link, { ex: 3600 });
+    await redis.set(`short:${link}`, `${shorter}`, {
       ex: 3600,
     });
 

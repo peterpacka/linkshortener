@@ -5,21 +5,21 @@ import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{
-    link: string;
+    shorter: string;
   }>;
 }
 
 export default async function Page({ params }: PageProps) {
-  const { link } = await params;
+  const { shorter } = await params;
 
-  if (link.length !== 6) {
+  if (shorter.length !== 6) {
     return notFound();
   }
 
   let found;
   try {
     await connectDB();
-    found = await linkModel.findOne({ shorter: link });
+    found = await linkModel.findOne({ shorter: shorter });
   } catch (error) {
     console.error(error);
     return notFound();

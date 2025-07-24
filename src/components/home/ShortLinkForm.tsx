@@ -4,6 +4,7 @@ import Link from "next/link";
 import Script from "next/script";
 import { FormEvent, useRef, useState } from "react";
 import { RecaptchaPrivacyText } from "./RecaptchaPrivacyText";
+import { CopyToClipboard } from "./CopyToClipboard";
 
 declare const grecaptcha: {
   ready: (cb: () => void) => void;
@@ -110,14 +111,17 @@ export const ShortLinkForm = () => {
               <path d="M4 4h7a4 4 0 0 1 4 4v12" />
             </svg>
           </span>
-          <Link
-            href={generatedLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="self-center text-lg text-green-900 hover:text-green-900/80 hover:underline"
-          >
-            {generatedLink}
-          </Link>
+          <div className="flex items-center justify-center gap-2">
+            <Link
+              href={generatedLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="self-center text-lg text-green-900 hover:text-green-900/80 hover:underline"
+            >
+              {generatedLink}
+            </Link>
+            <CopyToClipboard copy={generatedLink} />
+          </div>
         </div>
       )}
       {error && (

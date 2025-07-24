@@ -5,18 +5,18 @@ import { notFound, permanentRedirect } from "next/navigation";
 
 interface PageProps {
   params: Promise<{
-    link: string;
+    shorter: string;
   }>;
 }
 
 export default async function Page({ params }: PageProps) {
-  const { link } = await params;
+  const { shorter } = await params;
 
-  if (link.length !== 6) {
+  if (shorter.length !== 6) {
     return notFound();
   }
 
-  const cachedResult = await redis.get(`short:${link}`);
+  const cachedResult = await redis.get(`short:${shorter}`);
   if (cachedResult) {
     return permanentRedirect(cachedResult as string);
   }
@@ -24,7 +24,7 @@ export default async function Page({ params }: PageProps) {
   let found;
   try {
     await connectDB();
-    found = await linkModel.findOne({ shorter: link });
+    found = await linkModel.findOne({ shorter: shorter });
   } catch (error) {
     console.error(error);
     return notFound();
@@ -34,6 +34,6 @@ export default async function Page({ params }: PageProps) {
     return notFound();
   }
 
-  await redis.set(`short:${link}`, found.url, { ex: 3600 });
+  await redis.set(`short:${shorter}`, found.url, { ex: 3600 });
   return permanentRedirect(`${found.url}`);
 }
