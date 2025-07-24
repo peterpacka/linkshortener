@@ -11,6 +11,5 @@ export async function connectDB() {
     await mongoose.connect(uri);
   } catch (error) {
     console.error("Database connection error:", error);
-    process.exit(1);
   }
 }
